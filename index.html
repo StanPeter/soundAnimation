@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- required meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- CSS files -->
+    <link rel="stylesheet" href="style.css">
+    
+    <title>Sound Animation</title>
+    
+        
+    <!-- JS Paper to animate-->
+    <script type="text/javascript" src="paper-full.js"></script>
+    <!-- JS Howler to play sounds -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.core.min.js"
+        integrity="sha256-q2vnVvwrx3RbYXPyAwx7c2npmULQg2VdCXBoJ5+iigs=" crossorigin="anonymous"></script>
+    <!-- JS data file -->
+    <script src="data.js"></script>
+
+    <!-- Define inlined PaperScript associate it with myCanvas -->
+
+    <script type="text/paperscript" canvas="myCanvas">
+        //defy a var to store and later deleting circles
+        var circles = [];
+
+        function randomColor() {
+            return Math.floor(Math.random() * 256);
+        }
+
+        function randomRgb() {
+            return "rgb(" + randomColor() + ", " + randomColor() + ", " + randomColor() + ")";
+        }
+
+        function onKeyDown(event){
+
+            if(data[event.key]){
+
+                //create a random point of the circle spawning(on the window)
+                var maxPoint = new Point(view.size.width, view.size.height);
+                var randomPoint = Point.random();
+                var point = maxPoint * randomPoint;
+            
+                //create a new random colored circle
+                var newCircle = new Path.Circle(point, 200);
+                newCircle.fillColor = randomRgb();
+            
+                //play the specific key's sound from data.js
+                data[event.key].sound.play();
+            
+                circles.push(newCircle);
+            }
+        }
+
+        function onFrame(event){
+
+            for(var i=0; i < circles.length; i++){
+
+                //changing color animation
+                circles[i].fillColor.hue += 1;
+
+                //reducing circle until its gone
+                circles[i].scale(.95);
+
+                if(circles[i].area < 1){
+
+                    //remove the circle from the Array and frame
+                    circles[i].remove();
+                    circles.splice(i, 1);
+               }
+            }
+        }
+
+    </script>
+    
+</head>
+
+<body>
+    <canvas id="myCanvas" resize></canvas>
+</body>
+</html>
